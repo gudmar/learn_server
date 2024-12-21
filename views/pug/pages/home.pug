@@ -1,0 +1,12 @@
+extends ../templates/pageWithNavigation.pug
+include ../mixins/navigation.pug
+
+block navigation
+    +navigation(navigations, navigationTitle)
+
+block pageTitle
+    h2 #{title}
+
+block content
+    .content
+        Content

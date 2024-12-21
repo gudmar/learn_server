@@ -1,0 +1,12 @@
+extends ../templates/pageWithNavigation
+include ../mixins/digitalClock.pug
+include ../mixins/navigation.pug
+
+block navigation
+    +navigation(navigations, navigationTitle)
+
+block pageTitle
+    h2 Digital clock
+
+block content
+    +digitalClock(hours, minutes, secundes)

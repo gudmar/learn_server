@@ -1,0 +1,14 @@
+- var definedTitle = title || 'no name'
+- var definedStyleFileNames = styleFileNames || []
+- var definedScriptFileNames = scripts || []
+
+html
+    head
+        title #{definedTitle}
+        each styleFileName in definedStyleFileNames
+            link(rel="stylesheet" type="text/css" href=styleFileName)
+        each scriptFileName in definedScriptFileNames
+            script(src=scriptFileName)
+    body
+        block content
+        //- block foot

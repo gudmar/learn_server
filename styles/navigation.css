@@ -1,0 +1,46 @@
+.navigation-wrapper {
+    /* display: inline-block; */
+    background-color: black;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100%;
+    overflow: auto;
+    /* width: 100%; */
+}
+
+.navigation-title {
+    text-align: center;
+}
+
+.navigation-item {
+    font-size: 2rem;
+    margin: 0.5rem;
+    transition-duration: 300ms;
+}
+.navigation-item:hover{
+    color: #aaaaaa;
+    transform: translateX(2rem);
+    transition-duration: 300ms;
+}
+.navigation-item:active{
+    color: #99aa99;
+}
+
+
+.navigation-list {
+    list-style-type: none;
+    cursor: pointer;
+    margin: 0.5rem;
+    padding: 0.5rem;
+}
+
+.navigation-location {
+    /* padding: 0.5rem;
+    margin: 0.5rem; */
+}
+
+.navigation-location:link,
+.navigation-location:visited {
+    color: white;
+    text-decoration: none;
+}

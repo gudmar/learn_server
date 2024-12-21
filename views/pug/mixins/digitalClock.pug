@@ -1,0 +1,9 @@
+mixin digitalClock(hours, minutes, secunds)
+    .digital-clock-wrapper
+        .digital-clock-container
+            div(class='digital-clock-display-segment digital-clock-hours') #{hours}
+            div.digital-clock-separator :
+            div(class='digital-clock-display-segment digital-clock-minutes') #{minutes}
+            div.digital-clock-separator :
+            div(class='digital-clock-display-segment digital-clock-secundes') #{minutes}
+            

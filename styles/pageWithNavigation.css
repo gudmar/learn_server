@@ -1,0 +1,31 @@
+.page-content-section-container {
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+    display: flex;
+    height: 85%;
+}
+
+.page-title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.page-content-container {
+    width: 77%;
+    background-color: #111111;
+    height: 100%
+}
+
+.page-navigation-container {
+    width: 23%
+}
+
+.page-title-container {
+    width: 100%;
+    height: 15%;
+    background-color: #002200;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}

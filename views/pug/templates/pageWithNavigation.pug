@@ -1,0 +1,20 @@
+- var definedTabTitle = tabTitle || 'no name'
+- var definedStyleFileNames = styleFileNames || []
+- var definedScriptFileNames = scripts || []
+
+html
+    head
+        title #{definedTabTitle}
+        each styleFileName in definedStyleFileNames
+            link(rel="stylesheet" type="text/css" href=styleFileName)
+        each scriptFileName in definedScriptFileNames
+            script(src=scriptFileName)
+    body
+        .page-title-container
+            block pageTitle
+        .page-content-section-container
+            .page-navigation-container
+                block navigation
+            .page-content-container
+                block content
+

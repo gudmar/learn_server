@@ -1,0 +1,26 @@
+mixin navigation(navigations, navigationTitle)
+    -console.log(navigations)
+    .navigation-wrapper
+        h3.navigation-title #{navigationTitle}
+        ul.navigation-list
+            each item in navigations
+                if item.action
+                    li(class='navigation-item')
+                        div(id=`${id}` class='navigation-action') #{item.label}
+                else
+                    li.navigation-item
+                        a(class='navigation-location' href=item.location) #{item.label}
+    script(type = 'text/javascript').
+        const copy = '#{navigations.map(function(i) { console.log(i); return i})}'
+        console.log(copy)
+    //- script(type = 'text/javascript').
+    //-     console.dir(JSON.stringify('#{navigations}'))
+        //- '#{navigations}'.forEach(function(i) {console.log(i)})
+        //- navigations.forEach(
+        //-     function({id, label, action, location}) {
+        //-         if (action === undefined) return;
+        //-         if (id === undefined) throw new Error('When action specified, should have id')
+        //-         const element = document.getElementById(id);
+        //-         element.addEventListener('click', action)
+        //-     }
+        //- )
