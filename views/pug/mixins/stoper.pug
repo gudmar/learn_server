@@ -1,0 +1,20 @@
+mixin stoper(h, m, s, ms, isPaused)
+    .stoper-wrapper
+        .stoper-display-container
+            div(class='stoper-hours stoper-display-segment') #{h.padStart(2, 0)}
+            div.stoper-separator :
+            div(class='stoper-minutes stoper-display-segment') #{m.padStart(2, 0)}
+            div.stoper-separator :
+            div(class='stoper-seconds stoper-display-segment') #{s.padStart(2, 0)}
+            div.stoper-separator :
+            div(class='stoper-miliseconds stoper-display-segment') #{ms.padStart(2, 0)}
+        .keyboard-conteiner
+            div(class='stoper-start stoper-button')
+                span Start
+            div(class='stoper-pause stoper-button')
+                if isPaused
+                    span Resume
+                else
+                    span Pause
+            div(class='stoper-reset stoper-button')
+                span Reset

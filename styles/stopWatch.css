@@ -1,0 +1,102 @@
+.page-content-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+}
+
+.stoper-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 3.5rem;
+    width: 100%;
+    justify-items: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.stoper-display-container {
+    display: flex;
+}
+
+.stoper-display-segment {
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 3rem;
+}
+
+.stoper-separator {
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 3rem;
+}
+
+.keyboard-container {
+    display: flex;
+}
+
+.stoper-container {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.stoper-button {
+    color: white;
+    display: inline-block;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    cursor: pointer;
+    border-radius: 0.5rem;
+}
+
+.stoper-start {
+    background-color: #007700;
+    border: solid thin #aaaaaa;
+}
+
+.stoper-pause {
+    background-color: #0000FF;
+    border: solid thin #aaaaaa;
+}
+
+.stoper-reset {
+    background-color: #AA0000;
+    border: solid thin #aaaaaa;
+}
+
+.stoper-reset:hover {
+    background-color: #FF0000;
+}
+
+.stoper-start:hover {
+    background-color: #00AA00;
+}
+
+.stoper-pause:hover {
+    background-color: #3333FF;
+}
+
+.stoper-reset:active {
+    background-color: #FF7777;
+    color: black;
+}
+
+.stoper-start:active {
+    background-color: #77AA77;
+    color: black;
+}
+
+.stoper-pause:active {
+    background-color: #7777FF;
+    color: black;
+}
+
+.stoper-button-disabled {
+    background-color: #777777;
+    color: #333333;
+    cursor:not-allowed;
+}

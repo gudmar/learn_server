@@ -36,6 +36,9 @@ server.get('/home', (req, res) => {
             {
                 label: 'clock',
                 location: '/clock'
+            },
+            {
+                label: 'stop-watch', location: '/stop-watch'
             }
         ]
     }
@@ -58,6 +61,26 @@ server.get('/home', (req, res) => {
 //     res.send(htmlContent)
 // })
 
+server.get('/stop-watch', (req, res) => {
+    const locals = { 
+        h: '0', m: '0', s: '0', ms: '0',
+        tabTitle: 'Learning express',
+        title: 'Home',
+        navigationTitle: 'Options',
+        navigations: [
+            {label: 'home', location: '/home'},
+            {label: 'clock', location: '/clock'}
+        ],
+        styleFileNames: [
+            'stopWatch.css',
+            'navigation.css',
+            'pageWithNavigation.css'
+        ],
+        scripts: ['stopWatch.js'],
+    };
+    res.render('./pug/pages/stoperPage.pug', locals)
+})
+
 server.get('/clock', (req, res) => {
     const date = new Date(Date.now());
     const hours = `${date.getHours()}`.padStart(2, 0);
@@ -75,7 +98,10 @@ server.get('/clock', (req, res) => {
         navigations: [
             {label: 'home', location: '/'},
             // {label: 'back', action: () => history.back()}
-            {label: 'back', id: 'back', action: () => {console.log('Clicked')} }
+            {label: 'back', id: 'back', action: () => {console.log('Clicked')} },
+            {
+                label: 'stop-watch', location: '/stop-watch'
+            }
         ],
         hours, minutes, secunds,
     };
