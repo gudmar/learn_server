@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const navs = require('./navigations.js')
 const pug = require('pug');
 
 dotenv.config({path: '.env'});
@@ -20,6 +21,24 @@ const getStylesPaths = (fileNames) => fileNames.map((fileName) => `./styles/${fi
 server.use(express.static('styles'));
 server.use(express.static('scripts'));
 
+const commonNavigations = [
+    {
+        label: 'clock',
+        location: '/clock',
+    },
+    {
+        label: 'stop-watch', location: '/stop-watch'
+    },
+    {
+        label: 'login',
+        location: '/login'
+    },
+    {
+        label: 'check if logged in',
+        location: '/is-logged-in'
+    }
+]
+
 server.get('/home', (req, res) => {
     const locals = {
         // styleFileNames: getStylesPaths([
@@ -33,13 +52,8 @@ server.get('/home', (req, res) => {
             './pageWithNavigation.css'
         ],
         navigations: [
-            {
-                label: 'clock',
-                location: '/clock'
-            },
-            {
-                label: 'stop-watch', location: '/stop-watch'
-            }
+            navs.clock, navs.stopWatch,
+            // navs.login, navs.isLoggedIn
         ]
     }
     res.render('./pug/pages/home.pug', locals)
@@ -68,8 +82,7 @@ server.get('/stop-watch', (req, res) => {
         title: 'Home',
         navigationTitle: 'Options',
         navigations: [
-            {label: 'home', location: '/home'},
-            {label: 'clock', location: '/clock'}
+            navs.home, navs.clock
         ],
         styleFileNames: [
             'stopWatch.css',
@@ -93,15 +106,13 @@ server.get('/clock', (req, res) => {
             'pageWithNavigation.css'
         ],
         scripts: [
-            'digitalClock.js'
+            'digitalClock.js',
+            'setNavActions.js'
         ],
         navigations: [
-            {label: 'home', location: '/'},
-            // {label: 'back', action: () => history.back()}
-            {label: 'back', id: 'back', action: () => {console.log('Clicked')} },
-            {
-                label: 'stop-watch', location: '/stop-watch'
-            }
+            navs.home,
+            navs.back,
+            navs.stopWatch
         ],
         hours, minutes, secunds,
     };
