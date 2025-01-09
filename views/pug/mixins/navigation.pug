@@ -6,7 +6,7 @@ mixin navigation(navigations, navigationTitle)
             each item in navigations
                 if item.action
                     li(class='navigation-item')
-                        div(id=`${id}` class='navigation-action') #{item.label}
+                        div(data-action=`${item.action}` class='navigation-action') #{item.label}
                 else
                     li.navigation-item
                         a(class='navigation-location' href=item.location) #{item.label}

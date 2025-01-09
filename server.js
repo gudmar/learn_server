@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const navs = require('./navigations.js')
 const pug = require('pug');
 
 dotenv.config({path: '.env'});
@@ -20,6 +21,24 @@ const getStylesPaths = (fileNames) => fileNames.map((fileName) => `./styles/${fi
 server.use(express.static('styles'));
 server.use(express.static('scripts'));
 
+const commonNavigations = [
+    {
+        label: 'clock',
+        location: '/clock',
+    },
+    {
+        label: 'stop-watch', location: '/stop-watch'
+    },
+    {
+        label: 'login',
+        location: '/login'
+    },
+    {
+        label: 'check if logged in',
+        location: '/is-logged-in'
+    }
+]
+
 server.get('/home', (req, res) => {
     const locals = {
         // styleFileNames: getStylesPaths([
@@ -33,13 +52,8 @@ server.get('/home', (req, res) => {
             './pageWithNavigation.css'
         ],
         navigations: [
-            {
-                label: 'clock',
-                location: '/clock'
-            },
-            {
-                label: 'stop-watch', location: '/stop-watch'
-            }
+            navs.clock, navs.stopWatch, navs.login, navs.isLoggedIn
+            // navs.login, navs.isLoggedIn
         ]
     }
     res.render('./pug/pages/home.pug', locals)
@@ -68,8 +82,7 @@ server.get('/stop-watch', (req, res) => {
         title: 'Home',
         navigationTitle: 'Options',
         navigations: [
-            {label: 'home', location: '/home'},
-            {label: 'clock', location: '/clock'}
+            navs.home, navs.clock
         ],
         styleFileNames: [
             'stopWatch.css',
@@ -93,20 +106,90 @@ server.get('/clock', (req, res) => {
             'pageWithNavigation.css'
         ],
         scripts: [
-            'digitalClock.js'
+            'digitalClock.js',
+            'setNavActions.js'
         ],
         navigations: [
-            {label: 'home', location: '/'},
-            // {label: 'back', action: () => history.back()}
-            {label: 'back', id: 'back', action: () => {console.log('Clicked')} },
-            {
-                label: 'stop-watch', location: '/stop-watch'
-            }
+            navs.home,
+            navs.back,
+            navs.stopWatch
         ],
         hours, minutes, secunds,
     };
     res.render('./pug/pages/digitalClockPage.pug', locals)
 })
+
+server.get('/login', (req, res) => {
+    const locals = {
+        styleFileNames: [
+            'navigation.css',
+            'login.css',
+            'pageWithNavigation.css',
+            'forms.css'
+        ],
+        scripts: [
+            'login.js',
+            'setNavActions.js'
+        ],
+        navigations: [
+            navs.home,
+            navs.back,
+            navs.login,
+            navs.clock,
+            navs.stopWatch,
+            navs.isLoggedIn
+        ],
+    };
+    res.render('./pug/pages/loginPage.pug', locals)
+})
+
+server.get('/is-logged-in', (req, res) => {
+    const locals = {
+        styleFileNames: [
+            'navigation.css',
+            'isLoggedIn.css',
+            'pageWithNavigation.css'
+        ],
+        scripts: [
+            'login.js',
+            'setNavActions.js'
+        ],
+        navigations: [
+            navs.home,
+            navs.back,
+            navs.isLoggedIn,
+            navs.clock,
+            navs.stopWatch,
+        ],
+        isLoggedIn: 'Maybe'
+    };
+    res.render('./pug/pages/isLoggedInPage.pug', locals)
+})
+
+server.get('/register', (req, res) => {
+    const locals = {
+        styleFileNames: [
+            'navigation.css',
+            'register.css',
+            'pageWithNavigation.css',
+            'forms.css'
+        ],
+        scripts: [
+            'register.js',
+            'setNavActions.js'
+        ],
+        navigations: [
+            navs.home,
+            navs.back,
+            navs.login,
+            navs.isLoggedIn,
+            navs.clock,
+            navs.stopWatch,
+        ],
+    };
+    res.render('./pug/pages/registerPage.pug', locals)
+})
+
 
 server.listen(process.env.LOCAL_PORT)
 // server.listen(3000)

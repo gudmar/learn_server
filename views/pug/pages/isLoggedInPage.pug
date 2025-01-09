@@ -1,0 +1,13 @@
+extends ../templates/pageWithNavigation.pug
+include ../mixins/isLoggedIn.pug
+include ../mixins/navigation.pug
+
+block navigation
+    +navigation(navigations, navigationTitle)
+
+block pageTitle
+    h2 #{title} Is user logged in
+
+block content
+    .content
+        +isLoggedInTemplate(isLoggedIn)

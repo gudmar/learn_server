@@ -1,0 +1,7 @@
+mixin isLoggedInTemplate(isLoggedIn)
+    .is-logged-in-wrapper
+        if isLoggedIn
+            span(class='logged') Logged
+        else
+            span(class='not-logged') Not logged
+            
