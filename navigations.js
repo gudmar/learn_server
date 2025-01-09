@@ -1,4 +1,5 @@
 const BACK_ACTION = 'back'
+const GO_TO_REGISTER = 'go to register'
 
 const CLOCK = {
     label: 'clock',

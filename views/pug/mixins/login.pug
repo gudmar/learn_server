@@ -1,0 +1,15 @@
+mixin login()
+    div(class='login-credentials-wrapper forms-wrapper')
+        .forms-container
+            form
+                div(class='login-input-container forms-field')
+                    label(for='login-nick-name') Login
+                    input(type='text' id='login-nick-name')
+                div(class='login-input-container forms-field')
+                    label(for='login-password') Passowrd
+                    input(type='password' id='login-password')
+                div(class='login-keypad-container forms-keypad')
+                    div(class='login-login forms-button')
+                        span Login
+                    div(class='login-register forms-button')
+                        span Register

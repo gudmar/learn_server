@@ -52,7 +52,7 @@ server.get('/home', (req, res) => {
             './pageWithNavigation.css'
         ],
         navigations: [
-            navs.clock, navs.stopWatch,
+            navs.clock, navs.stopWatch, navs.login, navs.isLoggedIn
             // navs.login, navs.isLoggedIn
         ]
     }
@@ -118,6 +118,78 @@ server.get('/clock', (req, res) => {
     };
     res.render('./pug/pages/digitalClockPage.pug', locals)
 })
+
+server.get('/login', (req, res) => {
+    const locals = {
+        styleFileNames: [
+            'navigation.css',
+            'login.css',
+            'pageWithNavigation.css',
+            'forms.css'
+        ],
+        scripts: [
+            'login.js',
+            'setNavActions.js'
+        ],
+        navigations: [
+            navs.home,
+            navs.back,
+            navs.login,
+            navs.clock,
+            navs.stopWatch,
+            navs.isLoggedIn
+        ],
+    };
+    res.render('./pug/pages/loginPage.pug', locals)
+})
+
+server.get('/is-logged-in', (req, res) => {
+    const locals = {
+        styleFileNames: [
+            'navigation.css',
+            'isLoggedIn.css',
+            'pageWithNavigation.css'
+        ],
+        scripts: [
+            'login.js',
+            'setNavActions.js'
+        ],
+        navigations: [
+            navs.home,
+            navs.back,
+            navs.isLoggedIn,
+            navs.clock,
+            navs.stopWatch,
+        ],
+        isLoggedIn: 'Maybe'
+    };
+    res.render('./pug/pages/isLoggedInPage.pug', locals)
+})
+
+server.get('/register', (req, res) => {
+    const locals = {
+        styleFileNames: [
+            'navigation.css',
+            'register.css',
+            'pageWithNavigation.css',
+            'forms.css'
+        ],
+        scripts: [
+            'register.js',
+            'setNavActions.js'
+        ],
+        navigations: [
+            navs.home,
+            navs.back,
+            navs.login,
+            navs.isLoggedIn,
+            navs.clock,
+            navs.stopWatch,
+        ],
+    };
+    res.render('./pug/pages/registerPage.pug', locals)
+})
+
 
 server.listen(process.env.LOCAL_PORT)
 // server.listen(3000)
