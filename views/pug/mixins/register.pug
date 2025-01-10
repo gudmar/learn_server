@@ -1,19 +1,19 @@
 mixin register()
-    div(class='register-credentials-wrapper forms-wrapper')
-        .forms-container
-            form
-                div(class='register-nick-name-container forms-field')
-                    label(for='register-name-name') Name
-                    input(type='text' id='register-nick-name')
-                div(class='register-nick-name-container forms-field')
-                    label(for='register-nick-name') Login
-                    input(type='text' id='register-nick-name')
-                div(class='register-passowrd-container forms-field')
-                    label(for='register-password') Passowrd
-                    input(type='password' id='register-password' title='Should have a letter and a digit, should be at least 5 characters long')
-                div(class='register-passowrd-container forms-field')
-                    label(for='register-repeat-password') Repeat passowrd
-                    input(type='password' id='register-password')
-                div(class='register-keypad-container')
-                    div(class='register-create-account forms-button')
-                        span Create account
+    div(class='register-credentials-wrapper forms-wrapper')        
+        form(class='forms-container' id='register-user-form' action='/register' method="post")
+            div(class='register-nick-name-container forms-field')
+                label(for='register-name') Name
+                input(type='text' id='register-name' autocomplete='name')
+            div(class='register-nick-name-container forms-field')
+                label(for='register-nick-name') Login
+                input(type='text' id='register-nick-name' autocomplete='login')
+            div(class='register-passowrd-container forms-field')
+                label(for='register-password-1') Passowrd
+                input(type='password' id='register-password-1' title='Should have a letter and a digit, should be at least 5 characters long' autocomplete='new-password')
+            div(class='register-passowrd-container forms-field')
+                label(for='register-password-2') Repeat passowrd
+                input(type='password' id='register-password-2' autocomplete='new-password')
+            div(class='register-user-info' id='register-user-information')
+            div(class='register-keypad-container')
+                div(class='register-create-account forms-button')
+                    span Create account
