@@ -12,7 +12,6 @@ mixin navigation(navigations, navigationTitle)
                         a(class='navigation-location' href=item.location) #{item.label}
     script(type = 'text/javascript').
         const copy = '#{navigations.map(function(i) { console.log(i); return i})}'
-        console.log(copy)
     //- script(type = 'text/javascript').
     //-     console.dir(JSON.stringify('#{navigations}'))
         //- '#{navigations}'.forEach(function(i) {console.log(i)})

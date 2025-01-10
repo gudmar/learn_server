@@ -1,7 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const navs = require('./navigations.js')
-const pug = require('pug');
 
 dotenv.config({path: '.env'});
 const PORT = process.env.PORT || 3000;
@@ -15,8 +14,6 @@ server.use((req, res, next) => {
 server.get('/', (req, res) => {
     res.redirect('/home')
 })
-
-const getStylesPaths = (fileNames) => fileNames.map((fileName) => `./styles/${fileName}`);
 
 server.use(express.static('styles'));
 server.use(express.static('scripts'));
@@ -128,8 +125,8 @@ server.get('/login', (req, res) => {
             'forms.css'
         ],
         scripts: [
+            'setNavActions.js',
             'login.js',
-            'setNavActions.js'
         ],
         navigations: [
             navs.home,
