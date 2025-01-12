@@ -112,16 +112,31 @@ const showSuccess = (message) => {
 
 const getForm = () => document.getElementById('register-user-form');
 
-const submitForm = () => {
+const getUrl = (endpoint) => `${window.location.origin}/${endpoint}`
+
+const submit = async () => {
+    const body = JSON.stringify(getFormFieldValues());
+    const url = getUrl('register')
+    console.log(body)
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body
+    })
+}
+
+const submitForm = async () => {
     const form = getForm();
-    form.submit();
+    await form.submit();
 }
 
 const submitIfValid = () => {
     const {isValid, message} = checkIsFromValid();
-    console.log(isValid, message)
     if (isValid) {
-        submitForm();
+        // submitForm();
+        submit();
         showSuccess();
     }
     else {
