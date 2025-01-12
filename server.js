@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const navs = require('./navigations.js')
+const bodyParser = require('body-parser')
 
 dotenv.config({path: '.env'});
 const PORT = process.env.PORT || 3000;
@@ -11,8 +12,16 @@ server.use((req, res, next) => {
     console.log(req.method, req.path);
     next();
 })
+server.use(express.json())
+server.use(bodyParser.urlencoded({extended: false}))
 server.get('/', (req, res) => {
     res.redirect('/home')
+})
+
+server.post('/register', async (req, res) => {
+   console.log(req)
+   console.log(req.body)
+   
 })
 
 server.use(express.static('styles'));
