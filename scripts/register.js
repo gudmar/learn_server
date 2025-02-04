@@ -116,15 +116,18 @@ const getUrl = (endpoint) => `${window.location.origin}/${endpoint}`
 
 const submit = async () => {
     const body = JSON.stringify(getFormFieldValues());
+    // const body = getFormFieldValues()
     const url = getUrl('register')
     console.log(body)
     const response = await fetch(url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            // 'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/json'
         },
         body
     })
+    console.log(response)
 }
 
 const submitForm = async () => {
@@ -133,11 +136,11 @@ const submitForm = async () => {
 }
 
 const submitIfValid = () => {
-    const {isValid, message} = checkIsFromValid();
+    const { isValid, message } = checkIsFromValid();
     if (isValid) {
         // submitForm();
         submit();
-        showSuccess();
+        showSuccess('User probably registered');
     }
     else {
         showError(message);
