@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const navs = require('./navigations.js')
 const bodyParser = require('body-parser')
+const registerController = require('./Controlers/register')
 
 dotenv.config({path: '.env'});
 const PORT = process.env.PORT || 3000;
@@ -12,16 +13,28 @@ server.use((req, res, next) => {
     console.log(req.method, req.path);
     next();
 })
-server.use(express.json())
-server.use(bodyParser.urlencoded({extended: false}))
+
+server.use(bodyParser.raw()) // This returns a parser that processes all possible body formats, matching them based on 'Content-Type'
+// server.use(bodyParser.json()) // This returns a parser that returns a json encoded bodies and only such
+// server.use(bodyParser.urlencoded({extended: false})) // THIS returns a parser that parses URL encoded bodies, and only such
+
+
+server.use(bodyParser.json())
 server.get('/', (req, res) => {
     res.redirect('/home')
 })
 
 server.post('/register', async (req, res) => {
-   console.log(req)
-   console.log(req.body)
-   
+//    console.log(req)
+//    console.log(req.body, typeof req.body)
+   const {nameField, nickNameField, password1, password2} = req.body
+    // console.log('User is ', nameField, nickNameField, password1, password2)
+   registerController.register(req, res)
+//    return res.status(400).send('done')
+})
+
+server.get('/error', async(req, res) => {
+    res.render('<div class="error">Error</div>')
 })
 
 server.use(express.static('styles'));
