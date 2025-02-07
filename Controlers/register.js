@@ -21,10 +21,10 @@ const register = async (req, res) => {
         const {
             nameField: name, nickNameField: nickName, password1: password
         } = req.body;
-        const outcome = await rejesterUser({ name, nickName, password })
-        res.body = { outcome }
-        if (outcome) return res.status(201).send('Success')
-        return res.status(500).send('Failure')
+        const { result, message } = await rejesterUser({ name, nickName, password })
+        res.body = { result, message: message || 'OK' }
+        if (result) return res.status(201).send('Success')
+        return res.status(409).send({message})
     } catch (e) {
         return res.redirect('/error')
     }
