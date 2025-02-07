@@ -194,6 +194,7 @@ server.get('/register', (req, res) => {
             'forms.css'
         ],
         scripts: [
+            'scriptUtils.js',
             'register.js',
             'setNavActions.js'
         ],

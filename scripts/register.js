@@ -1,6 +1,13 @@
 const bindRegisterScripts = () => {
     const createAccountButton = document.querySelector('.register-create-account');
     createAccountButton.addEventListener('click', submitIfValid);
+
+    setDefaultValues({
+        nameField: 'John',
+        nickNameField: 'doe-1',
+        password1: 'asdf1',
+        password2: 'asdf1'
+    })
 }
 
 const fieldNameToIdMap = {
@@ -8,6 +15,13 @@ const fieldNameToIdMap = {
     nickNameField: 'register-nick-name',
     password1: 'register-password-1',
     password2: 'register-password-2',
+}
+
+const setDefaultValues = (defaults) => {
+    Object.entries(fieldNameToIdMap).forEach(([key, id]) => {
+        const element = document.getElementById(id);
+        element.value = defaults[key]
+    })
 }
 
 const getFormFieldValues = () => {
@@ -114,6 +128,20 @@ const getForm = () => document.getElementById('register-user-form');
 
 const getUrl = (endpoint) => `${window.location.origin}/${endpoint}`
 
+// const getBodyAsJson = async (response) => {
+//     const reader = response.body.getReader()
+//     let result = ''
+//     await reader.read().then(function add({done, value}) {
+//         if (done) return;
+//         value.forEach((code) => {
+//             const char = String.fromCharCode(code)
+//             result += char
+//         })
+//         return reader.read().then(add)
+//     });
+//     return JSON.parse(result)
+// }
+
 const submit = async () => {
     const body = JSON.stringify(getFormFieldValues());
     // const body = getFormFieldValues()
@@ -127,7 +155,9 @@ const submit = async () => {
         },
         body
     })
-    console.log(response)
+    const responseBody = await getBodyAsJson(response)
+    
+    showError(responseBody.message)
 }
 
 const submitForm = async () => {
