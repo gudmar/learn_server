@@ -1,4 +1,5 @@
 const getBodyAsJson = async (response) => {
+    if (response.redirected) window.location = response.url
     const reader = response.body.getReader()
     let result = ''
     await reader.read().then(function add({done, value}) {
@@ -9,8 +10,9 @@ const getBodyAsJson = async (response) => {
         })
         return reader.read().then(add)
     });
+    console.log('Reader result', result)
     return JSON.parse(result)
 }
 
-module.exports = { getBodyAsJson }
+// module.exports = { getBodyAsJson }
 

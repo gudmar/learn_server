@@ -24,10 +24,14 @@ class FileOperator {
         return this.result
     }
 
-    async getFromFile (fileName) {
+    getFromFile (fileName) {
         return new Promise((res, rej) => {
-            const content = JSON.parse(fs.readFileSync(fileName))
-            res(content)
+            const content = fs.readFileSync(fileName, 'utf8');
+            if (content.trim() === '') {
+                return res([])
+            }
+            const contentAsJson = JSON.parse(content)
+            return res(contentAsJson)
         })
     }
 
@@ -44,11 +48,12 @@ class FileOperator {
     }
 
     async loadContentFromFile (fileName) {
-        if (this.checkIfLocked(0)) return this
-        this.lock = true
-        this.operationIndex++
+        // if (this.checkIfLocked(0)) return this
+        // this.lock = true
+        // this.operationIndex++
         await this.createFileIfNotExist(fileName)
         this.content = await this.getFromFile(fileName)
+        console.log('THIS content', this.content)
         this.fileName = fileName
         return this
     }
@@ -114,7 +119,11 @@ const fileOperator = new FileOperator()
 const get = async (fileName, findCallback) => {
     const result = await fileOperator
         .loadContentFromFile(fileName)
-        .getEntry(findCallback)
+        .then((operatorInstance) =>
+            operatorInstance.getEntry(findCallback)
+            // fileOperator.getEntry(findCallback)
+        )
+        
     await fileOperator.clean()
     return result
 }

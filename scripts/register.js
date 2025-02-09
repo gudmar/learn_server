@@ -22,6 +22,10 @@ const setDefaultValues = (defaults) => {
         const element = document.getElementById(id);
         element.value = defaults[key]
     })
+    Object.entries(fieldNameToIdMap).forEach(([key, id]) => {
+        const element = document.getElementById(id);
+        console.log(key, element.value)
+    })
 }
 
 const getFormFieldValues = () => {
@@ -153,10 +157,9 @@ const submit = async () => {
             // 'Content-Type': 'application/x-www-form-urlencoded'
             'Content-Type': 'application/json'
         },
-        body
+        body: body
     })
     const responseBody = await getBodyAsJson(response)
-    
     showError(responseBody.message)
 }
 

@@ -28,13 +28,18 @@ server.post('/register', async (req, res) => {
 //    console.log(req)
 //    console.log(req.body, typeof req.body)
    const {nameField, nickNameField, password1, password2} = req.body
-    // console.log('User is ', nameField, nickNameField, password1, password2)
-   registerController.register(req, res)
+    console.log('User is ', nameField, nickNameField, password1, password2)
+   await registerController.register(req, res)
 //    return res.status(400).send('done')
 })
 
+
+
 server.get('/error', async(req, res) => {
-    res.render('<div class="error">Error</div>')
+    // res.render('<div class="error">Error</div>')
+    console.log('Get error interior')
+    return res.append('Content-Type', 'text/html').send('<div class="error">Error</div>')
+
 })
 
 server.use(express.static('styles'));
