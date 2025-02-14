@@ -33,7 +33,9 @@ const submit = async () => {
         body
     })
     const responseBody = await getBodyAsJson(response)
-    showError(INFORMATION_ID, responseBody.message, '')
+    console.log(responseBody)
+    if (responseBody.result) showSuccess(INFORMATION_ID, responseBody.message, 'forms-success')
+    else showError(INFORMATION_ID, responseBody.message, 'forms-error')
 }
 
 const bindLoginScripts = () => {

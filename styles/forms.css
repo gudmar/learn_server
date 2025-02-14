@@ -54,3 +54,20 @@
 .forms-keypad{
     display: flex;
 }
+
+.forms-error{
+    background-color: #ff9999;
+    border-radius: 0.5rem;
+    border: solid medium red;
+    color: red;
+    padding: 1rem;
+}
+
+.forms-success{
+    background-color: #99ff99;
+    border-radius: 0.5rem;
+    border: solid medium green;
+    color: green;
+    padding: 1rem;
+}
+

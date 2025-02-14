@@ -42,13 +42,13 @@ const getInformationField = (id) => document.getElementById(id)
 
 const showError = (destinationId, message, errorClass) => {
     const informationField = getInformationField(destinationId);
-    informationField.classList.add(errorClass || [''])
+    informationField.classList.add(errorClass || 'forms-error')
     informationField.innerHTML = message
 }
 
 const showSuccess = (destinationId, message, successClass) => {
     const informationField = getInformationField(destinationId);
-    informationField.classList.add(successClass || [''])
+    informationField.classList.add(successClass || 'forms-success')
     informationField.innerHTML = message
 }
 

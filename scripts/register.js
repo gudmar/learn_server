@@ -91,8 +91,8 @@ const clearInformation = () => {
     ].forEach((cssClass) => informationField?.classList?.remove(cssClass))
 }
 
-ERROR_CLASS = 'register-error'
-SUCCESS_CLASS = 'register-success'
+ERROR_CLASS = 'forms-error'
+SUCCESS_CLASS = 'forms-success'
 
 const getForm = () => document.getElementById('register-user-form');
 
