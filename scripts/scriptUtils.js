@@ -14,5 +14,41 @@ const getBodyAsJson = async (response) => {
     return JSON.parse(result)
 }
 
-// module.exports = { getBodyAsJson }
+const setDefaultValues = (defaults) => {
+    Object.entries(fieldNameToIdMap).forEach(([key, id]) => {
+        const element = document.getElementById(id);
+        element.value = defaults[key]
+    })
+    Object.entries(fieldNameToIdMap).forEach(([key, id]) => {
+        const element = document.getElementById(id);
+        console.log(key, element.value)
+    })
+}
+
+const getFormFieldValues = (fieldNameToIdMap) => {
+    values = Object.entries(fieldNameToIdMap).reduce(
+        (acc, [fieldName, id]) => {
+            const element = document.getElementById(id);
+            acc[fieldName] = element.value
+            return acc
+        }, {}
+    )
+    return values
+}
+
+const getUrl = (endpoint) => `${window.location.origin}/${endpoint}`
+
+const getInformationField = (id) => document.getElementById(id)
+
+const showError = (destinationId, message, errorClass) => {
+    const informationField = getInformationField(destinationId);
+    informationField.classList.add(errorClass || [''])
+    informationField.innerHTML = message
+}
+
+const showSuccess = (destinationId, message, successClass) => {
+    const informationField = getInformationField(destinationId);
+    informationField.classList.add(successClass || [''])
+    informationField.innerHTML = message
+}
 

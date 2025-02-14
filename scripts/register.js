@@ -17,28 +17,6 @@ const fieldNameToIdMap = {
     password2: 'register-password-2',
 }
 
-const setDefaultValues = (defaults) => {
-    Object.entries(fieldNameToIdMap).forEach(([key, id]) => {
-        const element = document.getElementById(id);
-        element.value = defaults[key]
-    })
-    Object.entries(fieldNameToIdMap).forEach(([key, id]) => {
-        const element = document.getElementById(id);
-        console.log(key, element.value)
-    })
-}
-
-const getFormFieldValues = () => {
-    values = Object.entries(fieldNameToIdMap).reduce(
-        (acc, [fieldName, id]) => {
-            const element = document.getElementById(id);
-            acc[fieldName] = element.value
-            return acc
-        }, {}
-    )
-    return values
-}
-
 const getError = (message) => {
     return {
     isValid: false,
@@ -86,7 +64,7 @@ const checkIsFromValid = () => {
         nickNameField,
         password1,
         password2
-    } = getFormFieldValues();
+    } = getFormFieldValues(fieldNameToIdMap);
     const validationFunctions = [
         () => validateNameField(nameField),
         () => validateNickNameField(nickNameField),
@@ -103,10 +81,10 @@ const checkIsFromValid = () => {
     return VALID
 }
 
-const getInformationField = () => document.getElementById('register-user-information')
+const INFORMATION_ID = 'register-user-information'
 
 const clearInformation = () => {
-    const informationField = getInformationField();
+    const informationField = getInformationField(INFORMATION_ID);
     informationField.innerHTML = ''
     [
         ERROR_CLASS, SUCCESS_CLASS
@@ -116,21 +94,8 @@ const clearInformation = () => {
 ERROR_CLASS = 'register-error'
 SUCCESS_CLASS = 'register-success'
 
-const showError = (message) => {
-    const informationField = getInformationField();
-    informationField.classList.add(ERROR_CLASS)
-    informationField.innerHTML = message
-}
-
-const showSuccess = (message) => {
-    const informationField = getInformationField();
-    informationField.classList.add(SUCCESS_CLASS)
-    informationField.innerHTML = message
-}
-
 const getForm = () => document.getElementById('register-user-form');
 
-const getUrl = (endpoint) => `${window.location.origin}/${endpoint}`
 
 // const getBodyAsJson = async (response) => {
 //     const reader = response.body.getReader()
@@ -147,7 +112,7 @@ const getUrl = (endpoint) => `${window.location.origin}/${endpoint}`
 // }
 
 const submit = async () => {
-    const body = JSON.stringify(getFormFieldValues());
+    const body = JSON.stringify(getFormFieldValues(fieldNameToIdMap));
     // const body = getFormFieldValues()
     const url = getUrl('register')
     console.log(body)
@@ -160,7 +125,7 @@ const submit = async () => {
         body: body
     })
     const responseBody = await getBodyAsJson(response)
-    showError(responseBody.message)
+    showError(INFORMATION_ID, responseBody.message, ERROR_CLASS)
 }
 
 const submitForm = async () => {
@@ -173,10 +138,10 @@ const submitIfValid = () => {
     if (isValid) {
         // submitForm();
         submit();
-        showSuccess('User probably registered');
+        showSuccess(INFORMATION_ID, 'User probably registered', SUCCESS_CLASS );
     }
     else {
-        showError(message);
+        showError(INFORMATION_ID, message, ERROR_CLASS);
     }
 }
 
