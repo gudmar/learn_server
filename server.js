@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const navs = require('./navigations.js')
 const bodyParser = require('body-parser')
 const registerController = require('./Controlers/register')
+const { handleLogin } = require('./Controlers/login')
 
 dotenv.config({path: '.env'});
 const PORT = process.env.PORT || 3000;
@@ -31,6 +32,10 @@ server.post('/register', async (req, res) => {
     console.log('User is ', nameField, nickNameField, password1, password2)
    await registerController.register(req, res)
 //    return res.status(400).send('done')
+})
+
+server.post('/login', async(req, res) => {
+    await handleLogin(req, res)
 })
 
 
@@ -152,6 +157,7 @@ server.get('/login', (req, res) => {
             'forms.css'
         ],
         scripts: [
+            'scriptUtils.js',
             'setNavActions.js',
             'login.js',
         ],
