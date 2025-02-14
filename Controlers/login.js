@@ -1,5 +1,6 @@
 const z = require('zod');
-const { checkUser } = require('../DataStorage/userManagement/checkUser')
+const { checkUser } = require('../DataStorage/userManagement/checkUser');
+const { getJWTCookie } = require('../Functions/getJWT');
 
 const validateBody = (req) => {
     const body = req.body;
@@ -15,12 +16,20 @@ const validateBody = (req) => {
 
 const handleLogin = async (req, res) => {
     validateBody(req)
-    const { result, message } = await checkUser(req.body.login, req.body.password)
+    const { result, message, jwtData } = await checkUser(req.body.login, req.body.password)
     if (result) {
         console.log('User exists')
-        return res.status(200).send({message: 'OK'})
+        const jwt = getJWTCookie(jwtData)
+        return res.status(200)
+            .cookie('jwt', jwt, {
+                secure: true,
+                httpOnly: true,
+                sameSite: 'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            })
+            .send({ result: true, message: 'OK', jwt })
     }
-    return res.status(401).send({message: 'User not authenticated'})
+    return res.status(401).send({ result: false, message: 'User not authenticated' })
 }
 
 module.exports = { handleLogin }
