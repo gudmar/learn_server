@@ -4,20 +4,24 @@ const navs = require('./navigations.js')
 const bodyParser = require('body-parser')
 const registerController = require('./Controlers/register')
 const { handleLogin } = require('./Controlers/login')
+const { markUserLoggedIn } = require('./Middleware/markUserLoggedIn')
 
 dotenv.config({path: '.env'});
 const PORT = process.env.PORT || 3000;
 
 const server = express();
 server.set('view engine', 'pug');
-server.use((req, res, next) => {
-    console.log(req.method, req.path);
-    next();
-})
 
 server.use(bodyParser.raw()) // This returns a parser that processes all possible body formats, matching them based on 'Content-Type'
 // server.use(bodyParser.json()) // This returns a parser that returns a json encoded bodies and only such
 // server.use(bodyParser.urlencoded({extended: false})) // THIS returns a parser that parses URL encoded bodies, and only such
+
+server.use(async (req, res, next) => {
+    console.log(req.method, req.path);
+    next();
+})
+
+server.use(markUserLoggedIn)
 
 
 server.use(bodyParser.json())
@@ -83,7 +87,8 @@ server.get('/home', (req, res) => {
         navigations: [
             navs.clock, navs.stopWatch, navs.login, navs.isLoggedIn
             // navs.login, navs.isLoggedIn
-        ]
+        ],
+        isLoggedIn: req.isLoggedIn
     }
     res.render('./pug/pages/home.pug', locals)
 })
@@ -119,6 +124,7 @@ server.get('/stop-watch', (req, res) => {
             'pageWithNavigation.css'
         ],
         scripts: ['stopWatch.js'],
+        isLoggedIn: req.isLoggedIn
     };
     res.render('./pug/pages/stoperPage.pug', locals)
 })
@@ -144,6 +150,7 @@ server.get('/clock', (req, res) => {
             navs.stopWatch
         ],
         hours, minutes, secunds,
+        isLoggedIn: req.isLoggedIn
     };
     res.render('./pug/pages/digitalClockPage.pug', locals)
 })
@@ -169,6 +176,7 @@ server.get('/login', (req, res) => {
             navs.stopWatch,
             navs.isLoggedIn
         ],
+        isLoggedIn: req.isLoggedIn
     };
     res.render('./pug/pages/loginPage.pug', locals)
 })
@@ -217,6 +225,7 @@ server.get('/register', (req, res) => {
             navs.clock,
             navs.stopWatch,
         ],
+        isLoggedIn: req.isLoggedIn
     };
     res.render('./pug/pages/registerPage.pug', locals)
 })
