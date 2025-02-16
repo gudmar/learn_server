@@ -48,12 +48,8 @@ class FileOperator {
     }
 
     async loadContentFromFile (fileName) {
-        // if (this.checkIfLocked(0)) return this
-        // this.lock = true
-        // this.operationIndex++
         await this.createFileIfNotExist(fileName)
         this.content = await this.getFromFile(fileName)
-        console.log('THIS content', this.content)
         this.fileName = fileName
         return this
     }
