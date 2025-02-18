@@ -1,11 +1,14 @@
 extends ../templates/pageWithNavigation
 include ../mixins/stoper.pug
 include ../mixins/navigation.pug
+include ../mixins/isLoggedIn.pug
 
 block navigation
     +navigation(navigations, navigationTitle)
 block pageTitle
     h2 Stop watch
+    div.aside-right
+        +isLoggedInTemplate(name)
 
 block content
     //- +stoper(hours, minutes, secundes, miliseconds)

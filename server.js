@@ -33,7 +33,6 @@ server.post('/register', async (req, res) => {
 //    console.log(req)
 //    console.log(req.body, typeof req.body)
    const {nameField, nickNameField, password1, password2} = req.body
-    console.log('User is ', nameField, nickNameField, password1, password2)
    await registerController.register(req, res)
 //    return res.status(400).send('done')
 })
@@ -72,6 +71,11 @@ const commonNavigations = [
     }
 ]
 
+server.post('/logout', (req, res) => {
+    const r = req;
+    console.log('Logging out')
+})
+
 server.get('/home', (req, res) => {
     const locals = {
         // styleFileNames: getStylesPaths([
@@ -82,14 +86,26 @@ server.get('/home', (req, res) => {
         navigationTitle: 'Options',
         styleFileNames: [
             './navigation.css',
-            './pageWithNavigation.css'
+            './pageWithNavigation.css',
+            './general.css'
         ],
         navigations: [
-            navs.clock, navs.stopWatch, navs.login, navs.isLoggedIn
+            navs.clock,
+            navs.stopWatch,
+            navs.login,
+            navs.getLogin(req.isLoggedIn)
             // navs.login, navs.isLoggedIn
         ],
-        isLoggedIn: req.isLoggedIn
+        scripts: [
+            'scriptUtils.js',
+            'setNavActions.js'
+        ],
+        isLoggedIn: req.isLoggedIn,
+        login: req.userLogin,
+        name: req.userName,
     }
+    console.log('======================')
+    console.log(req.isLoggedIn, req.userLogin, req.userName)
     res.render('./pug/pages/home.pug', locals)
 })
 
@@ -121,10 +137,13 @@ server.get('/stop-watch', (req, res) => {
         styleFileNames: [
             'stopWatch.css',
             'navigation.css',
-            'pageWithNavigation.css'
+            'pageWithNavigation.css',
+            './general.css'
         ],
         scripts: ['stopWatch.js'],
-        isLoggedIn: req.isLoggedIn
+        isLoggedIn: req.isLoggedIn,
+        login: req.userLogin,
+        name: req.userName,
     };
     res.render('./pug/pages/stoperPage.pug', locals)
 })
@@ -138,7 +157,8 @@ server.get('/clock', (req, res) => {
         styleFileNames: [
             'navigation.css',
             'digitalClock.css',
-            'pageWithNavigation.css'
+            'pageWithNavigation.css',
+            './general.css'
         ],
         scripts: [
             'digitalClock.js',
@@ -150,7 +170,9 @@ server.get('/clock', (req, res) => {
             navs.stopWatch
         ],
         hours, minutes, secunds,
-        isLoggedIn: req.isLoggedIn
+        isLoggedIn: req.isLoggedIn,
+        login: req.userLogin,
+        name: req.userName,
     };
     res.render('./pug/pages/digitalClockPage.pug', locals)
 })
@@ -161,7 +183,8 @@ server.get('/login', (req, res) => {
             'navigation.css',
             'login.css',
             'pageWithNavigation.css',
-            'forms.css'
+            'forms.css',
+            './general.css'
         ],
         scripts: [
             'scriptUtils.js',
@@ -176,32 +199,11 @@ server.get('/login', (req, res) => {
             navs.stopWatch,
             navs.isLoggedIn
         ],
-        isLoggedIn: req.isLoggedIn
+        isLoggedIn: req.isLoggedIn,
+        login: req.userLogin,
+        name: req.userName,
     };
     res.render('./pug/pages/loginPage.pug', locals)
-})
-
-server.get('/is-logged-in', (req, res) => {
-    const locals = {
-        styleFileNames: [
-            'navigation.css',
-            'isLoggedIn.css',
-            'pageWithNavigation.css'
-        ],
-        scripts: [
-            'login.js',
-            'setNavActions.js'
-        ],
-        navigations: [
-            navs.home,
-            navs.back,
-            navs.isLoggedIn,
-            navs.clock,
-            navs.stopWatch,
-        ],
-        isLoggedIn: 'Maybe'
-    };
-    res.render('./pug/pages/isLoggedInPage.pug', locals)
 })
 
 server.get('/register', (req, res) => {
@@ -210,7 +212,8 @@ server.get('/register', (req, res) => {
             'navigation.css',
             'register.css',
             'pageWithNavigation.css',
-            'forms.css'
+            'forms.css',
+            './general.css'
         ],
         scripts: [
             'scriptUtils.js',
@@ -225,7 +228,9 @@ server.get('/register', (req, res) => {
             navs.clock,
             navs.stopWatch,
         ],
-        isLoggedIn: req.isLoggedIn
+        isLoggedIn: req.isLoggedIn,
+        login: req.userLogin,
+        name: req.userName,
     };
     res.render('./pug/pages/registerPage.pug', locals)
 })

@@ -1,0 +1,33 @@
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-items: center;
+    height: 0.8rem;
+    border: solid medium white;
+    border-radius: 0.8rem;
+    cursor: default;
+    padding: 0.25rem 0.4rem 0.25rem 0.4rem;
+    outline: 0;
+    font-size: 0.9rem;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+}
+
+.badge-success {
+    background-color: #44dd00;
+    border-color: #005500;
+    color: #005500;
+    box-shadow: inset 0px 0px 10px -10px rgb(8, 56, 8);
+}
+
+.badge-danger {
+    background-color: #dd7777;
+    border-color: #992222;
+    color: #992222;
+    box-shadow: inset 0px 0px 10px -10px rgb(17, 1, 1);
+}
+
+.aside-right {
+    position: absolute;
+    right: 1rem;
+}

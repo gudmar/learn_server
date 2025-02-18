@@ -76,7 +76,6 @@ const checkIsFromValid = () => {
         if (!isValid) validationMessage = message
         return !isValid
     })
-    console.log(validationMessage)
     if (validationMessage !== '') return getError(validationMessage)
     return VALID
 }
@@ -115,7 +114,6 @@ const submit = async () => {
     const body = JSON.stringify(getFormFieldValues(fieldNameToIdMap));
     // const body = getFormFieldValues()
     const url = getUrl('register')
-    console.log(body)
     const response = await fetch(url, {
         method: 'POST',
         headers: {

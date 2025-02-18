@@ -10,7 +10,6 @@ const getBodyAsJson = async (response) => {
         })
         return reader.read().then(add)
     });
-    console.log('Reader result', result)
     return JSON.parse(result)
 }
 
@@ -21,7 +20,6 @@ const setDefaultValues = (defaults) => {
     })
     Object.entries(fieldNameToIdMap).forEach(([key, id]) => {
         const element = document.getElementById(id);
-        console.log(key, element.value)
     })
 }
 
