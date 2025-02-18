@@ -19,11 +19,10 @@ const decodeJwt = async(jwToken) => {
 
 const validateJwt = async(jwToken) => {
     const decoded = await decodeJwt(jwToken);
-    console.log(decoded, decoded.result)
     if (!decoded.result) return false
     // const userData = await checkUser(decoded.login, decoded.password)
     const userData = await authenticateUser(decoded.login, decoded.password)
-    return userData.result
+    return { ...userData?.jwtData, result: true } || {result: false, login: null, name: null}
 }
 
 module.exports = { validateJwt }

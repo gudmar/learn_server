@@ -4,7 +4,6 @@ const { getJWTCookie } = require('../Functions/getJWT');
 
 const validateBody = (req) => {
     const body = req.body;
-    console.log('Body', body)
     if (!body) throw new Error('Login request has no body')
     const schema = 
         z.object({

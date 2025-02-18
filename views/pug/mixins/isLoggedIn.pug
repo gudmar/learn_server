@@ -1,7 +1,9 @@
-mixin isLoggedInTemplate(isLoggedIn)
+mixin isLoggedInTemplate(name)
     .is-logged-in-wrapper
         if isLoggedIn
-            span(class='logged') Logged
+            div(class='badge badge-success')
+                span(class='badge-label') Hello #{name}
         else
-            span(class='not-logged') Not logged
+            div(class='badge badge-danger')
+                span(class='badge-label') Unknown user
             

@@ -1,12 +1,15 @@
 extends ../templates/pageWithNavigation.pug
 include ../mixins/login.pug
 include ../mixins/navigation.pug
+include ../mixins/isLoggedIn.pug
 
 block navigation
     +navigation(navigations, navigationTitle)
 
 block pageTitle
     h2 #{title} Login
+    div.aside-right
+        +isLoggedInTemplate(name)
 
 block content
     .content

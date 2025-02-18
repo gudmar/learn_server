@@ -28,7 +28,6 @@ const authenticateUser = async(login, password) => {
             password: user.password
         }
     }
-    console.log('Authentication', result)
     return result
 }
 

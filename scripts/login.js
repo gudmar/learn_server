@@ -1,7 +1,6 @@
 const bindRegisterButton = () => {
     const button = document.querySelector('.login-register');
     button.addEventListener('click', () => {
-            console.log('Redirection to register')
             document.location.href = "/register";
         } 
     )
@@ -10,7 +9,6 @@ const bindRegisterButton = () => {
 const bindLoginButton = () => {
     const button = document.querySelector('.login-login');
     button.addEventListener('click', () => {
-        console.log('Login user')
         submit()
     })
 }
@@ -33,13 +31,11 @@ const submit = async () => {
         body
     })
     const responseBody = await getBodyAsJson(response)
-    console.log(responseBody)
     if (responseBody.result) showSuccess(INFORMATION_ID, responseBody.message, 'forms-success')
     else showError(INFORMATION_ID, responseBody.message, 'forms-error')
 }
 
 const bindLoginScripts = () => {
-    console.log('Binding login scripts')
     bindRegisterButton();
     bindLoginButton();
 
