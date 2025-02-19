@@ -26,7 +26,12 @@ const handleLogin = async (req, res) => {
                 sameSite: 'strict',
                 maxAge: 7 * 24 * 60 * 60 * 1000
             })
-            .send({ result: true, message: 'OK', jwt })
+            .send({
+                result: true,
+                message: 'OK',
+                command: 'reload'
+                // jwt
+            })
     }
     return res.status(401).send({ result: false, message: 'User not authenticated' })
 }

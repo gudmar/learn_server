@@ -30,6 +30,7 @@ const submit = async () => {
         },
         body
     })
+    await doWithIncommingMessage(response)
     const responseBody = await getBodyAsJson(response)
     if (responseBody.result) showSuccess(INFORMATION_ID, responseBody.message, 'forms-success')
     else showError(INFORMATION_ID, responseBody.message, 'forms-error')

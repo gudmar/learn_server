@@ -12,7 +12,13 @@ const actionsMap = [
                     'Content-Type': 'application/json'
                 },
             })
+            await doWithIncommingMessage(response)
             console.log(response)
+        }
+    ],
+    [
+        'login', async () => {
+            window.location.assign(getUrl('login'))
         }
     ]
 ]
