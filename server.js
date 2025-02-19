@@ -30,11 +30,8 @@ server.get('/', (req, res) => {
 })
 
 server.post('/register', async (req, res) => {
-//    console.log(req)
-//    console.log(req.body, typeof req.body)
    const {nameField, nickNameField, password1, password2} = req.body
    await registerController.register(req, res)
-//    return res.status(400).send('done')
 })
 
 server.post('/login', async(req, res) => {
@@ -73,6 +70,13 @@ const commonNavigations = [
 
 server.post('/logout', (req, res) => {
     const r = req;
+    return res.status(200)
+        .cookie('jwt', '', {
+            secure: true,
+            httpOnly: true,
+            sameSite: 'strict'
+        })
+        .send({message: 'User logged out', command: 'reload'})
     console.log('Logging out')
 })
 
@@ -132,13 +136,16 @@ server.get('/stop-watch', (req, res) => {
         title: 'Home',
         navigationTitle: 'Options',
         navigations: [
-            navs.home, navs.clock
+            navs.home,
+            navs.clock,
+            navs.getLogin(req.isLoggedIn)
         ],
         styleFileNames: [
             'stopWatch.css',
             'navigation.css',
             'pageWithNavigation.css',
-            './general.css'
+            './general.css',
+            './scriptUtils'
         ],
         scripts: ['stopWatch.js'],
         isLoggedIn: req.isLoggedIn,
@@ -162,12 +169,14 @@ server.get('/clock', (req, res) => {
         ],
         scripts: [
             'digitalClock.js',
-            'setNavActions.js'
+            'setNavActions.js',
+            './scriptUtils.js'
         ],
         navigations: [
             navs.home,
             navs.back,
-            navs.stopWatch
+            navs.stopWatch,
+            navs.getLogin(req.isLoggedIn)
         ],
         hours, minutes, secunds,
         isLoggedIn: req.isLoggedIn,
@@ -194,7 +203,8 @@ server.get('/login', (req, res) => {
         navigations: [
             navs.home,
             navs.back,
-            navs.login,
+            // navs.login,
+            navs.getLogin(req.isLoggedIn),
             navs.clock,
             navs.stopWatch,
             navs.isLoggedIn
@@ -223,7 +233,8 @@ server.get('/register', (req, res) => {
         navigations: [
             navs.home,
             navs.back,
-            navs.login,
+            // navs.login,
+            navs.getLogin(req.isLoggedIn),
             navs.isLoggedIn,
             navs.clock,
             navs.stopWatch,

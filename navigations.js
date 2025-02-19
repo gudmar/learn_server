@@ -17,7 +17,7 @@ const getLogin = (isLoggedIn) => {
     console.log('Logout preparation')
     return {
         label: `${isLoggedIn ? 'Log out' : 'Log in'}`,
-        action: LOG_OUT
+        action: `${isLoggedIn ? LOG_OUT: 'login'}`
     }
 }
 

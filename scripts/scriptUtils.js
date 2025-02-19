@@ -50,3 +50,22 @@ const showSuccess = (destinationId, message, successClass) => {
     informationField.innerHTML = message
 }
 
+const doWithIncommingMessage = async (response) => {
+    const body = await getBodyAsJson(response);
+    const command = body.command;
+    const commandToActionMap = {
+        'reload': () => window.location.reload(),
+        'refreshJWT': async() => {
+            const response = await fetch(
+                getUrl('/refresh'),
+                { method: 'POST' }
+            )
+        }
+    }
+    console.log(body)
+    if (command) {
+        await commandToActionMap[command]()
+    } else {
+        console.log('Command not found')
+    }
+}
