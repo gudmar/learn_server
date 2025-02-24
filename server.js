@@ -68,10 +68,19 @@ const commonNavigations = [
     }
 ]
 
+server.get('/refresh-token', (req, res) => {
+    
+})
+
 server.post('/logout', (req, res) => {
     const r = req;
     return res.status(200)
         .cookie('jwt', '', {
+            secure: true,
+            httpOnly: true,
+            sameSite: 'strict'
+        })
+        .cookie('refresh', '', {
             secure: true,
             httpOnly: true,
             sameSite: 'strict'
@@ -185,6 +194,20 @@ server.get('/clock', (req, res) => {
     };
     res.render('./pug/pages/digitalClockPage.pug', locals)
 })
+
+server.get('/is-logged-in', (req, res) => {
+    res.send({isLogged: req.isLoggedIn})
+})
+
+const refreshTokenThenAskAgain = (req, res) => {
+    const requestEssentials = {
+        method: req.method,
+        params: req.params,
+        url: req.originalUrl,
+        body: req.body,
+        headers: req.headers,
+    }
+}
 
 server.get('/login', (req, res) => {
     const locals = {

@@ -50,6 +50,36 @@ const showSuccess = (destinationId, message, successClass) => {
     informationField.innerHTML = message
 }
 
+const makeRequest = async ({
+    method,
+    route,
+    body,
+    headers,
+}) => {
+    if (method === 'GET' && body) {
+        throw new Error('GET requests should not have a body')
+    }
+    const getRequest = () => fetch(route, {
+        method,
+        body: JSON.stringify(body),
+        headers: {
+            "Content-Type": 'application/json',
+            ...headers
+        }
+    })
+    const updateToken = () => fetch(
+        getUrl('refresh-token'),
+        {
+            method: 'GET'
+        }
+    )
+    const result = await getRequest()
+    if (result.command === 'refresh') {
+        await updateToken()
+    }
+    return getRequest();
+}
+
 const doWithIncommingMessage = async (response) => {
     const body = await getBodyAsJson(response);
     const command = body.command;
