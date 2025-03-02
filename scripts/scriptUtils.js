@@ -68,7 +68,7 @@ const makeRequest = async ({
         }
     })
     const updateToken = () => fetch(
-        getUrl('refresh-token'),
+        getUrl('/refresh-token'),
         {
             method: 'GET'
         }

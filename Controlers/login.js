@@ -28,7 +28,7 @@ const handleLogin = async (req, res) => {
                 maxAge: 7 * 24 * 60 * 60 * 1000
                 // maxAge: 1000
             })
-            .cookie('refresh', jwt, {
+            .cookie('refresh', refreshToken, {
                 secure: true,
                 httpOnly: true,
                 sameSite: 'strict',

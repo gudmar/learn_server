@@ -4,7 +4,13 @@ const navs = require('./navigations.js')
 const bodyParser = require('body-parser')
 const registerController = require('./Controlers/register')
 const { handleLogin } = require('./Controlers/login')
-const { markUserLoggedIn } = require('./Middleware/markUserLoggedIn')
+const { markUserLoggedIn, IS_LOGGED_IN, LOGGED_OUT, REFRESH } = require('./Middleware/markUserLoggedIn');
+const { validateRefreshJwt } = require('./Functions/validateJWT.js');
+const { getRefreshTokenFromRequest } = require('./Functions/getFromRequest.js');
+const { getJWTCookie, getAuthenticationTokenFromRefreshToken } = require('./Functions/getJWT.js');
+const { logVerboose } = require('./getLoggingOptions.js');
+const { refresh } = require('./Middleware/refresh.js');
+const cookie = require('cookie')
 
 dotenv.config({path: '.env'});
 const PORT = process.env.PORT || 3000;
@@ -21,7 +27,12 @@ server.use(async (req, res, next) => {
     next();
 })
 
-server.use(markUserLoggedIn)
+server.use(markUserLoggedIn) // ERROR when no cookies
+
+server.use((req, res, next) => {
+    console.log('isLoggedIn', req.isLoggedIn)
+    return next();
+})
 
 
 server.use(bodyParser.json())
@@ -68,8 +79,50 @@ const commonNavigations = [
     }
 ]
 
-server.get('/refresh-token', (req, res) => {
-    
+server.get('/is-authorized', async(req, res) => {
+    if (req.isLoggedIn === REFRESH) {
+        res.send({isRefreshNeeded: true})
+    }
+    res.send({isRefreshNeeded: false})
+})
+
+server.get('/refresh-token', async (req, res) => {
+    const refreshToken = getRefreshTokenFromRequest(req);
+    logVerboose('Refresh token is', refreshToken, refreshToken);
+    const isRefreshValid = await validateRefreshJwt(refreshToken);
+    const body = req.body;
+    // const originalRequest = body.originalRequest;
+    // logVerboose('BODY', body)
+    // if (!originalRequest) return res.redirect('/login')
+    if (!isRefreshValid) {
+        originalRequest.isLoggedIn = LOGGED_OUT;
+        return res
+        .cookie('jwt', '', {
+            secure: true,
+            httpOnly: true,
+            sameSite: 'strict',
+            expires: Date.now(),
+        })
+        .cookie('refresh', '', {
+            secure: true,
+            httpOnly: true,
+            sameSite: 'strict',
+            expires: Date.now(),
+        })
+        .send();
+        // .redirect(originalRequest.url)
+    }
+    const validAuthenticatoinToken = await getAuthenticationTokenFromRefreshToken(refreshToken)
+    return res
+        .cookie('jwt', validAuthenticatoinToken, {
+            secure: true,
+            httpOnly: true,
+            sameSite: 'strict',
+        })
+        .cookie('Refreshed-already-done', JSON.stringify({done: true}))
+        .send()
+        // .redirect(originalRequest.url)
+
 })
 
 server.post('/logout', (req, res) => {
@@ -78,18 +131,22 @@ server.post('/logout', (req, res) => {
         .cookie('jwt', '', {
             secure: true,
             httpOnly: true,
-            sameSite: 'strict'
+            sameSite: 'strict',
+            expires: Date.now(),
         })
         .cookie('refresh', '', {
             secure: true,
             httpOnly: true,
-            sameSite: 'strict'
+            sameSite: 'strict',
+            expires: Date.now(),
         })
         .send({message: 'User logged out', command: 'reload'})
     console.log('Logging out')
 })
 
-server.get('/home', (req, res) => {
+server.get('/home',
+            // refresh,
+            (req, res) => {
     const locals = {
         // styleFileNames: getStylesPaths([
         //     'navigation.css'
@@ -106,19 +163,20 @@ server.get('/home', (req, res) => {
             navs.clock,
             navs.stopWatch,
             navs.login,
-            navs.getLogin(req.isLoggedIn)
+            navs.getLogin(req.isLoggedIn === IS_LOGGED_IN)
             // navs.login, navs.isLoggedIn
         ],
         scripts: [
+            
             'scriptUtils.js',
+            'refresh.js',
             'setNavActions.js'
         ],
-        isLoggedIn: req.isLoggedIn,
+        isLoggedIn: req.isLoggedIn === IS_LOGGED_IN,
         login: req.userLogin,
         name: req.userName,
     }
-    console.log('======================')
-    console.log(req.isLoggedIn, req.userLogin, req.userName)
+    logVerboose('In home route. Loggin status | login | name', req.isLoggedIn, req.userLogin, req.userName)
     res.render('./pug/pages/home.pug', locals)
 })
 
@@ -147,7 +205,7 @@ server.get('/stop-watch', (req, res) => {
         navigations: [
             navs.home,
             navs.clock,
-            navs.getLogin(req.isLoggedIn)
+            navs.getLogin(req.isLoggedIn === IS_LOGGED_IN)
         ],
         styleFileNames: [
             'stopWatch.css',
@@ -157,7 +215,7 @@ server.get('/stop-watch', (req, res) => {
             './scriptUtils'
         ],
         scripts: ['stopWatch.js'],
-        isLoggedIn: req.isLoggedIn,
+        isLoggedIn: req.isLoggedIn === IS_LOGGED_IN,
         login: req.userLogin,
         name: req.userName,
     };
@@ -185,7 +243,7 @@ server.get('/clock', (req, res) => {
             navs.home,
             navs.back,
             navs.stopWatch,
-            navs.getLogin(req.isLoggedIn)
+            navs.getLogin(req.isLoggedIn === IS_LOGGED_IN)
         ],
         hours, minutes, secunds,
         isLoggedIn: req.isLoggedIn,
@@ -196,7 +254,7 @@ server.get('/clock', (req, res) => {
 })
 
 server.get('/is-logged-in', (req, res) => {
-    res.send({isLogged: req.isLoggedIn})
+    res.send({isLogged: req.isLoggedIn === IS_LOGGED_IN})
 })
 
 const refreshTokenThenAskAgain = (req, res) => {
@@ -207,6 +265,7 @@ const refreshTokenThenAskAgain = (req, res) => {
         body: req.body,
         headers: req.headers,
     }
+    
 }
 
 server.get('/login', (req, res) => {
@@ -227,12 +286,12 @@ server.get('/login', (req, res) => {
             navs.home,
             navs.back,
             // navs.login,
-            navs.getLogin(req.isLoggedIn),
+            navs.getLogin(req.isLoggedIn === IS_LOGGED_IN),
             navs.clock,
             navs.stopWatch,
             navs.isLoggedIn
         ],
-        isLoggedIn: req.isLoggedIn,
+        isLoggedIn: req.isLoggedIn === IS_LOGGED_IN,
         login: req.userLogin,
         name: req.userName,
     };
@@ -257,12 +316,12 @@ server.get('/register', (req, res) => {
             navs.home,
             navs.back,
             // navs.login,
-            navs.getLogin(req.isLoggedIn),
+            navs.getLogin(req.isLoggedIn === IS_LOGGED_IN),
             navs.isLoggedIn,
             navs.clock,
             navs.stopWatch,
         ],
-        isLoggedIn: req.isLoggedIn,
+        isLoggedIn: req.isLoggedIn === IS_LOGGED_IN,
         login: req.userLogin,
         name: req.userName,
     };
