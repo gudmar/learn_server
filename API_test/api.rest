@@ -1,0 +1,5 @@
+GET http://localhost:3001/is-logged-in
+Content-Type: application/json
+Cookie: jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImRvZS0wIiwibmFtZSI6IkpvaG4iLCJwYXNzd29yZCI6IiQyYiQxMCR5SlIzR2M5ZEZKLlB3T2JCeFJlMll1cmY1LlR0UGNrL1BNQ2ZHWVJKVDNvNml5ckRHcm1EUyIsImlhdCI6MTc0MDAwNTEzNH0.Q0yn-WhKR9bOFVLRdEfn_SyakV8u5HEpNQOV4JWpeYM; Secure
+
+// Something wrong with above request

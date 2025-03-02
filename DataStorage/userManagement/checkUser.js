@@ -1,5 +1,6 @@
 const { getUserByLogin } = require('./utils')
 const { checkPassword } = require('./hashPassword')
+const { logVerboose } = require('../../getLoggingOptions')
 
 const checkUser = async(login, password) => {
     const user = await getUserByLogin(login)
@@ -18,6 +19,7 @@ const checkUser = async(login, password) => {
 
 const authenticateUser = async(login, password) => {
     const user = await getUserByLogin(login)
+    // logVerboose('Authenticating user', user, login)
     const doesPasswordMatch = user === undefined ? false : password === user.password
     const result = {
         result: doesPasswordMatch,

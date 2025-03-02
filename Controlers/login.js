@@ -1,6 +1,6 @@
 const z = require('zod');
 const { checkUser } = require('../DataStorage/userManagement/checkUser');
-const { getJWTCookie } = require('../Functions/getJWT');
+const { getJWTCookie, getRefreshTokenCookie } = require('../Functions/getJWT');
 
 const validateBody = (req) => {
     const body = req.body;
@@ -19,12 +19,21 @@ const handleLogin = async (req, res) => {
     if (result) {
         console.log('User exists')
         const jwt = getJWTCookie(jwtData)
+        const refreshToken = getRefreshTokenCookie(jwtData)
         return res.status(200)
             .cookie('jwt', jwt, {
                 secure: true,
                 httpOnly: true,
                 sameSite: 'strict',
                 maxAge: 7 * 24 * 60 * 60 * 1000
+                // maxAge: 1000
+            })
+            .cookie('refresh', refreshToken, {
+                secure: true,
+                httpOnly: true,
+                sameSite: 'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000
+                // maxAge: 1000
             })
             .send({
                 result: true,
