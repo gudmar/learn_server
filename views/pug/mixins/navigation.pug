@@ -1,5 +1,4 @@
 mixin navigation(navigations, navigationTitle)
-    -console.log(navigations)
     .navigation-wrapper
         h3.navigation-title #{navigationTitle}
         ul.navigation-list
@@ -11,7 +10,7 @@ mixin navigation(navigations, navigationTitle)
                     li.navigation-item
                         a(class='navigation-location' href=item.location) #{item.label}
     script(type = 'text/javascript').
-        const copy = '#{navigations.map(function(i) { console.log(i); return i})}'
+        const copy = '#{navigations.map(function(i) { return i})}'
     //- script(type = 'text/javascript').
     //-     console.dir(JSON.stringify('#{navigations}'))
         //- '#{navigations}'.forEach(function(i) {console.log(i)})

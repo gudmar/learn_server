@@ -11,7 +11,8 @@ const decodeJwt = async(jwToken, secret, callback) => {
             message: 'No token'
         }
         const result = await new Promise((res, rej) => {
-            res(jwt.verify(jwToken, secret, callback || ((err, data) => { if (err) { rej(err) } else  res(data) })))
+            // res(jwt.verify(jwToken, secret, callback || ((err, data) => { if (err) { rej(err) } else  res(data) })))
+            res(jwt.verify(jwToken, secret))
             
         })
         return {

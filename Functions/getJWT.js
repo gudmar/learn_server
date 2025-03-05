@@ -15,7 +15,7 @@ const getAuthenticationTokenFromRefreshToken = async(refreshToken) => {
 
 const getTokenLifePeriod = () => Date.now() + 1000 * 60 // min
 
-const getRefreshTokenLifePeriod = () => Date.now() + 1000 * 60 * 2 // 2 min
+const getRefreshTokenLifePeriod = () => Date.now() + 1000 * 60 * 10 // 10 min
 
 const getMortalJWT = (data) => getJWT({...data, validity: getTokenLifePeriod()})
 

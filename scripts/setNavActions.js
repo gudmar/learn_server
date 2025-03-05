@@ -24,12 +24,9 @@ const actionsMap = [
 ]
 
 const setNavActions = () => {
-    // console.log('Setting ', actionsMap)
-    console.log(actionsMap)
     for(action of actionsMap) {
         const [actionName, actionFunction] = action
         const allNodesWithActionName = document.querySelectorAll(`[data-action='${actionName}']`);
-        console.log(allNodesWithActionName)
         allNodesWithActionName.forEach((node) => {
             node.addEventListener('click', actionFunction)
         })        

@@ -5,7 +5,8 @@
     }).then((res) => {console.log(res); return res})
     .then((res) => getBodyAsJson(res))
     .then((body) => {console.log(body); return body});
-    console.log('REfresh needed', reply.isRefreshNeeded)
+    console.log('REfresh needed', reply)
+    if (reply.isNotLoggedIn) { return; }
     if (reply.isRefreshNeeded) {
         await makeRequest({
             method: 'GET',
