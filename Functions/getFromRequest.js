@@ -4,7 +4,6 @@ const cookie = require('cookie')
 const getParsedCookies = (req) => {
     const cookies = req.headers?.cookie
     if(!cookies) {
-        logVerboose('Cookie in getParsedCookies is not defined', cookie);
         return {}
     }
     const result = cookie.parse(cookies);
@@ -12,12 +11,12 @@ const getParsedCookies = (req) => {
 }
 
 const getParsedToken = (req, tokenName) => {
-    const token = getParsedCookies(req)
+    const cookies = getParsedCookies(req)
+    if (!cookies) return null;
+    const token = cookies[tokenName];
     if (!token) return null;
-    logVerboose('Parsing token', token)
-    // const result = cookie.parse(token)[tokenName];
-    const parsedTokens = cookie.parse(token[tokenName])
-    logVerboose('Later', parsedTokens)
+    return token
+    const parsedTokens = cookie.parse(token)
     return parsedTokens[`${tokenName}Token`];
 }
 

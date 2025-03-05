@@ -10,16 +10,37 @@ const validateBody = (req) => {
             login: z.string(),
             password: z.string(),
         })
-    schema.parse(body)
+        schema.parse(body)
 }
 
 const handleLogin = async (req, res) => {
-    validateBody(req)
+    // validateBody(req)
     const { result, message, jwtData } = await checkUser(req.body.login, req.body.password)
     if (result) {
         console.log('User exists')
         const jwt = getJWTCookie(jwtData)
         const refreshToken = getRefreshTokenCookie(jwtData)
+        const preparedResponse = res
+        .cookie('jwt', jwt, {
+            secure: true,
+            httpOnly: true,
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+            // maxAge: 1000
+        })
+        .cookie('refresh', refreshToken, {
+            secure: true,
+            httpOnly: true,
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+            // maxAge: 1000
+        })
+
+
+        return preparedResponse.send({
+            result: true,
+            message: 'OK',
+            command: 'reload'})
         return res.status(200)
             .cookie('jwt', jwt, {
                 secure: true,

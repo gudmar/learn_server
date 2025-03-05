@@ -4,7 +4,7 @@ const navs = require('./navigations.js')
 const bodyParser = require('body-parser')
 const registerController = require('./Controlers/register')
 const { handleLogin } = require('./Controlers/login')
-const { markUserLoggedIn, IS_LOGGED_IN, LOGGED_OUT, REFRESH } = require('./Middleware/markUserLoggedIn');
+const { markUserLoggedIn, IS_LOGGED_IN, LOGGED_OUT, REFRESH, NO_TOKEN } = require('./Middleware/markUserLoggedIn');
 const { validateRefreshJwt } = require('./Functions/validateJWT.js');
 const { getRefreshTokenFromRequest } = require('./Functions/getFromRequest.js');
 const { getJWTCookie, getAuthenticationTokenFromRefreshToken } = require('./Functions/getJWT.js');
@@ -18,24 +18,31 @@ const PORT = process.env.PORT || 3000;
 const server = express();
 server.set('view engine', 'pug');
 
+server.use(express.static('styles'));
+server.use(express.static('scripts'));
+
 server.use(bodyParser.raw()) // This returns a parser that processes all possible body formats, matching them based on 'Content-Type'
 // server.use(bodyParser.json()) // This returns a parser that returns a json encoded bodies and only such
 // server.use(bodyParser.urlencoded({extended: false})) // THIS returns a parser that parses URL encoded bodies, and only such
+server.use(bodyParser.json())
 
 server.use(async (req, res, next) => {
     console.log(req.method, req.path);
-    next();
+    return next();
 })
 
 server.use(markUserLoggedIn) // ERROR when no cookies
+
+
+// ERRORS
+//     - in markUserLoggedIn something gows wrong when there are on cookies
+//     - Somethng may be wrong with refreshing the token, as user name was deleted and only valid and iat were present
 
 server.use((req, res, next) => {
     console.log('isLoggedIn', req.isLoggedIn)
     return next();
 })
 
-
-server.use(bodyParser.json())
 server.get('/', (req, res) => {
     res.redirect('/home')
 })
@@ -45,9 +52,7 @@ server.post('/register', async (req, res) => {
    await registerController.register(req, res)
 })
 
-server.post('/login', async(req, res) => {
-    await handleLogin(req, res)
-})
+server.post('/login', (req, res) => handleLogin(req, res))
 
 
 
@@ -58,32 +63,14 @@ server.get('/error', async(req, res) => {
 
 })
 
-server.use(express.static('styles'));
-server.use(express.static('scripts'));
-
-const commonNavigations = [
-    {
-        label: 'clock',
-        location: '/clock',
-    },
-    {
-        label: 'stop-watch', location: '/stop-watch'
-    },
-    {
-        label: 'login',
-        location: '/login'
-    },
-    {
-        label: 'check if logged in',
-        location: '/is-logged-in'
-    }
-]
-
 server.get('/is-authorized', async(req, res) => {
     if (req.isLoggedIn === REFRESH) {
-        res.send({isRefreshNeeded: true})
+        return res.send({isRefreshNeeded: true})
     }
-    res.send({isRefreshNeeded: false})
+    if ([NO_TOKEN, LOGGED_OUT].includes(req.isLoggedIn)) {
+        return res.send({isRefreshNeeded: false, isNotLoggedIn: true})
+    }
+    return res.send({isRefreshNeeded: false})
 })
 
 server.get('/refresh-token', async (req, res) => {
@@ -91,9 +78,9 @@ server.get('/refresh-token', async (req, res) => {
     logVerboose('Refresh token is', refreshToken, refreshToken);
     const isRefreshValid = await validateRefreshJwt(refreshToken);
     const body = req.body;
-    // const originalRequest = body.originalRequest;
-    // logVerboose('BODY', body)
-    // if (!originalRequest) return res.redirect('/login')
+    const originalRequest = body.originalRequest;
+    logVerboose('BODY', body)
+    if (!originalRequest) return res.redirect('/login')
     if (!isRefreshValid) {
         originalRequest.isLoggedIn = LOGGED_OUT;
         return res
@@ -101,13 +88,13 @@ server.get('/refresh-token', async (req, res) => {
             secure: true,
             httpOnly: true,
             sameSite: 'strict',
-            expires: Date.now(),
+            maxAge: 0,
         })
         .cookie('refresh', '', {
             secure: true,
             httpOnly: true,
             sameSite: 'strict',
-            expires: Date.now(),
+            maxAge: 0,
         })
         .send();
         // .redirect(originalRequest.url)
@@ -126,26 +113,29 @@ server.get('/refresh-token', async (req, res) => {
 })
 
 server.post('/logout', (req, res) => {
-    const r = req;
+    const date = new Date()
+    const now = date.toUTCString();
+
     return res.status(200)
         .cookie('jwt', '', {
             secure: true,
             httpOnly: true,
             sameSite: 'strict',
-            expires: Date.now(),
+            maxAge: 0,
+            // expires: now,
         })
         .cookie('refresh', '', {
             secure: true,
             httpOnly: true,
             sameSite: 'strict',
-            expires: Date.now(),
+            maxAge: 0,
+            // expires: now,
         })
         .send({message: 'User logged out', command: 'reload'})
-    console.log('Logging out')
 })
 
 server.get('/home',
-            // refresh,
+            refresh,
             (req, res) => {
     const locals = {
         // styleFileNames: getStylesPaths([
@@ -176,7 +166,6 @@ server.get('/home',
         login: req.userLogin,
         name: req.userName,
     }
-    logVerboose('In home route. Loggin status | login | name', req.isLoggedIn, req.userLogin, req.userName)
     res.render('./pug/pages/home.pug', locals)
 })
 
@@ -246,8 +235,8 @@ server.get('/clock', (req, res) => {
             navs.getLogin(req.isLoggedIn === IS_LOGGED_IN)
         ],
         hours, minutes, secunds,
-        isLoggedIn: req.isLoggedIn,
-        login: req.userLogin,
+        isLoggedIn: req.isLoggedIn === IS_LOGGED_IN,
+        login: req.isLoggedIn === IS_LOGGED_IN,
         name: req.userName,
     };
     res.render('./pug/pages/digitalClockPage.pug', locals)
@@ -264,11 +253,11 @@ const refreshTokenThenAskAgain = (req, res) => {
         url: req.originalUrl,
         body: req.body,
         headers: req.headers,
-    }
-    
+    }   
 }
 
 server.get('/login', (req, res) => {
+    console.log('User name', req.userName)
     const locals = {
         styleFileNames: [
             'navigation.css',
