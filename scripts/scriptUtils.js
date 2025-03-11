@@ -1,3 +1,10 @@
+const sleep = (time, value=null) => {
+    const p = new Promise((res) => {
+        setTimeout(() => res(value)), time
+    })
+    return p
+}
+
 const getBodyAsJson = async (response) => {
     if (response.redirected) window.location = response.url
     const reader = response.body.getReader()
@@ -8,8 +15,10 @@ const getBodyAsJson = async (response) => {
             const char = String.fromCharCode(code)
             result += char
         })
+        console.log(done, value)
         return reader.read().then(add)
     });
+    console.log(result)
     return JSON.parse(result)
 }
 
@@ -67,16 +76,16 @@ const makeRequest = async ({
             ...headers
         }
     })
-    const updateToken = () => fetch(
-        getUrl('/refresh-token'),
-        {
-            method: 'GET'
-        }
-    )
-    const result = await getRequest()
-    if (result.command === 'refresh') {
-        await updateToken()
-    }
+    // const updateToken = () => fetch(
+    //     getUrl('/refresh-token'),
+    //     {
+    //         method: 'GET'
+    //     }
+    // )
+    // const result = await getRequest()
+    // if (result.command === 'refresh') {
+    //     await updateToken()
+    // }
     return getRequest();
 }
 

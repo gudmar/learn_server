@@ -19,7 +19,7 @@ const server = express();
 server.set('view engine', 'pug');
 
 server.use(express.static('styles'));
-server.use(express.static('scripts'));
+server.use(express.static('scripts', { maxAge: 1000 * 60 * 60 })); // KEEP for 1h
 
 server.use(bodyParser.raw()) // This returns a parser that processes all possible body formats, matching them based on 'Content-Type'
 // server.use(bodyParser.json()) // This returns a parser that returns a json encoded bodies and only such
@@ -64,23 +64,24 @@ server.get('/error', async(req, res) => {
 })
 
 server.get('/is-authorized', async(req, res) => {
+    console.log('is-authorized: isLoggedIn', req.isLoggedIn)
     if (req.isLoggedIn === REFRESH) {
         return res.send({isRefreshNeeded: true})
     }
     if ([NO_TOKEN, LOGGED_OUT].includes(req.isLoggedIn)) {
         return res.send({isRefreshNeeded: false, isNotLoggedIn: true})
     }
-    return res.send({isRefreshNeeded: false})
+    return res.set({isRefreshNeeded: false}).send()
 })
 
-server.get('/refresh-token', async (req, res) => {
+server.head('/refresh-token', async (req, res) => {
     const refreshToken = getRefreshTokenFromRequest(req);
     logVerboose('Refresh token is', refreshToken, refreshToken);
     const isRefreshValid = await validateRefreshJwt(refreshToken);
-    const body = req.body;
-    const originalRequest = body.originalRequest;
-    logVerboose('BODY', body)
-    if (!originalRequest) return res.redirect('/login')
+    // const body = req.body;
+    // const originalRequest = body.originalRequest;
+    // logVerboose('BODY', body)
+    // if (!originalRequest) return res.redirect('/login')
     if (!isRefreshValid) {
         originalRequest.isLoggedIn = LOGGED_OUT;
         return res
@@ -106,7 +107,6 @@ server.get('/refresh-token', async (req, res) => {
             httpOnly: true,
             sameSite: 'strict',
         })
-        .cookie('Refreshed-already-done', JSON.stringify({done: true}))
         .send()
         // .redirect(originalRequest.url)
 
@@ -157,7 +157,6 @@ server.get('/home',
             // navs.login, navs.isLoggedIn
         ],
         scripts: [
-            
             'scriptUtils.js',
             'refresh.js',
             'setNavActions.js'
@@ -185,7 +184,9 @@ server.get('/home',
 //     res.send(htmlContent)
 // })
 
-server.get('/stop-watch', (req, res) => {
+server.get('/stop-watch',
+        // refresh,
+        (req, res) => {
     const locals = { 
         h: '0', m: '0', s: '0', ms: '0',
         tabTitle: 'Learning express',
@@ -201,9 +202,13 @@ server.get('/stop-watch', (req, res) => {
             'navigation.css',
             'pageWithNavigation.css',
             './general.css',
-            './scriptUtils'
+            
         ],
-        scripts: ['stopWatch.js'],
+        scripts: [
+            'scriptUtils.js',
+            'refresh.js',
+            'stopWatch.js'
+        ],
         isLoggedIn: req.isLoggedIn === IS_LOGGED_IN,
         login: req.userLogin,
         name: req.userName,
@@ -224,9 +229,10 @@ server.get('/clock', (req, res) => {
             './general.css'
         ],
         scripts: [
+            'scriptUtils.js',
+            'refresh.js',
             'digitalClock.js',
             'setNavActions.js',
-            './scriptUtils.js'
         ],
         navigations: [
             navs.home,
@@ -268,6 +274,7 @@ server.get('/login', (req, res) => {
         ],
         scripts: [
             'scriptUtils.js',
+            'refresh.js',
             'setNavActions.js',
             'login.js',
         ],
