@@ -13,7 +13,17 @@ const refresh = (req, res, next) => {
         }
         req.app.set('originalMethod', req.method)
         res.body = JSON.stringify(body);
-        res.redirect('/refresh-token')
+        // res.header('originalRequest', JSON.stringify({method, url}))
+        // res.header('refreshNeeded', 'true')
+        res.set({
+            originalRequest: JSON.stringify({method, url}),
+            refreshNeeded: true,
+        })
+        // throw new Error('Something seems to be wrong with messages')
+        return next();
+        
+        res.send()
+        // res.redirect('/refresh-token')
     }
 }
 

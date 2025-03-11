@@ -13,7 +13,7 @@ const getAuthenticationTokenFromRefreshToken = async(refreshToken) => {
     return token
 }
 
-const getTokenLifePeriod = () => Date.now() + 1000 * 60 // min
+const getTokenLifePeriod = () => Date.now() + 1000 * 20 // 20 sek // min
 
 const getRefreshTokenLifePeriod = () => Date.now() + 1000 * 60 * 10 // 10 min
 
